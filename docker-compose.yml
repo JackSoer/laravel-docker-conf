@@ -1,0 +1,34 @@
+version: "3.7"
+
+services:
+    app:
+        build: ./docker
+        image: laravel-new/laravel-new
+        ports:
+            - "8080:80"
+        volumes:
+            - ./:/var/www
+    db:
+        image: mysql:8
+        ports:
+            - "3307:3306"
+        volumes:
+            - mysql-data:/var/lib/mysql
+            - ./docker/mysql-config.cnf:/etc/mysql/conf.d/config.cnf
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: laravel
+            MYSQL_USER: laravel
+            MYSQL_PASSWORD: laravel
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - db:db
+        ports:
+            - "8081:80"
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+
+volumes:
+    mysql-data:
